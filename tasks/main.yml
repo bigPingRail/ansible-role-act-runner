@@ -11,6 +11,7 @@
       - git
       - systemd
       - jq
+      - docker.io
     state: present
 
 - name: Download act-runner binary
@@ -25,6 +26,8 @@
     shell: /usr/sbin/nologin
     create_home: true
     state: present
+    groups: docker
+    append: true
 
 - name: Create act-runner config
   template:
