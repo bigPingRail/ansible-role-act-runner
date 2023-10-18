@@ -48,6 +48,7 @@
   command: /usr/bin/jq -r .name {{ act_runner_file }}
   register: get_runner_name
   changed_when: false
+  ignore_errors: true
 
 - name: Register act-runner
   command: /usr/local/bin/act-runner register \
