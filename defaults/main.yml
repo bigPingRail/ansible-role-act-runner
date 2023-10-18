@@ -1,0 +1,17 @@
+# The version of act-runner to be installed.
+act_runner_version: "0.2.6"
+
+# Authentication token for act-runner.
+act_runner_token: ""
+
+# Labels/tags associated with the act-runner.
+act_runner_labels: ""
+
+# The name of the act-runner instance, which might be used to identify it uniquely among multiple runners.
+act_runner_name: ""
+
+# The file path where act-runner's configuration or metadata is stored.
+act_runner_file: "/home/act-runner/.runner"
+
+# The URL of the Gitea instance with which the act-runner interacts.
+gitea_instance_url: ""

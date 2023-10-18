@@ -1,0 +1,14 @@
+[Unit]
+Description=Act Runner
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=act-runner
+ExecStart=/usr/local/bin/act-runner daemon -c /etc/act-runner-config.yml 
+
+[Install]
+WantedBy=multi-user.target

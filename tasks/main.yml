@@ -1,0 +1,58 @@
+---
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: true
+    upgrade: true
+
+- name: Install prerequisites
+  apt:
+    name:
+      - curl
+      - git
+      - systemd
+      - jq
+    state: present
+
+- name: Download act-runner binary
+  get_url:
+    url: https://dl.gitea.com/act_runner/{{ act_runner_version }}/act_runner-{{ act_runner_version }}-linux-amd64
+    dest: /usr/local/bin/act-runner
+    mode: '0755'
+
+- name: Create a act-runner user with a home directory
+  user:
+    name: act-runner
+    shell: /usr/sbin/nologin
+    create_home: true
+    state: present
+
+- name: Create act-runner config
+  template:
+    src: act-runner-config.yml.j2
+    dest: /etc/act-runner-config.yml
+
+- name: Create act-runner service
+  template:
+    src: act-runner.service.j2
+    dest: /etc/systemd/system/act-runner.service
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  notify: Restart act-runner
+
+- name: Check act-runner name
+  command: /usr/bin/jq -r .name {{ act_runner_file }}
+  register: get_runner_name
+  changed_when: false
+
+- name: Register act-runner
+  command: /usr/local/bin/act-runner register \
+    --no-interactive \
+    --instance {{ gitea_instance_url }} \
+    --labels {{ act_runner_labels }} \
+    --name {{ act_runner_name }} \
+    --token {{ act_runner_token }} \
+    --config /etc/act-runner-config.yml
+  when: get_runner_name.stdout != act_runner_name
+  notify: Restart act-runner
